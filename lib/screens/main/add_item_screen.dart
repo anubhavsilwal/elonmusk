@@ -9,7 +9,7 @@ class AddItemScreen extends StatefulWidget {
 }
 
 class _AddItemScreenState extends State<AddItemScreen> {
-  int _mode = 0; // 0 = manual, 1 = barcode
+  int _mode = 0;
   int _qty = 1;
   String _category = 'Meat & Poultry';
 
@@ -20,17 +20,21 @@ class _AddItemScreenState extends State<AddItemScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
         children: [
-          _modeToggle(),
+          _modeToggle(context),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('New Inventory',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              Text('New Inventory',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPri(context),
+                  )),
               GestureDetector(
                 onTap: () {},
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.playlist_add, color: AppColors.primaryDark),
                     SizedBox(width: 4),
                     Text('Quick-add mode',
@@ -44,30 +48,31 @@ class _AddItemScreenState extends State<AddItemScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          _mode == 0 ? _manualForm() : _barcodePlaceholder(),
+          _mode == 0 ? _manualForm(context) : _barcodePlaceholder(context),
           const SizedBox(height: 24),
-          const Text('Recently Added',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          Text('Recently Added',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPri(context),
+              )),
           const SizedBox(height: 12),
           SizedBox(
             height: 100,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                _recentCard('Produce', 'Organic Kale', 'Qty: 2',
+                _recentCard(context, 'Produce', 'Organic Kale', 'Qty: 2',
                     AppColors.primaryDark),
                 const SizedBox(width: 10),
-                _recentCard('Dairy', 'Whole Milk', 'Qty: 1 gal',
+                _recentCard(context, 'Dairy', 'Whole Milk', 'Qty: 1 gal',
                     AppColors.warning),
                 const SizedBox(width: 10),
                 Container(
                   width: 130,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.divider,
-                      style: BorderStyle.solid,
-                    ),
+                    border: Border.all(color: AppColors.divider(context)),
                   ),
                 ),
               ],
@@ -87,7 +92,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     height: 130,
                     color: const Color(0xFFCFE7D2),
                     child: const Center(
-                      child: Icon(Icons.kitchen, size: 48, color: AppColors.primary),
+                      child: Icon(Icons.kitchen,
+                          size: 48, color: AppColors.primary),
                     ),
                   ),
                 ),
@@ -124,23 +130,23 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  Widget _modeToggle() {
+  Widget _modeToggle(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.chipUnselected,
+        color: AppColors.chipUnsel(context),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Row(
         children: [
-          Expanded(child: _modeBtn('Manual Entry', 0)),
-          Expanded(child: _modeBtn('Barcode Scan', 1)),
+          Expanded(child: _modeBtn(context, 'Manual Entry', 0)),
+          Expanded(child: _modeBtn(context, 'Barcode Scan', 1)),
         ],
       ),
     );
   }
 
-  Widget _modeBtn(String label, int idx) {
+  Widget _modeBtn(BuildContext context, String label, int idx) {
     final selected = _mode == idx;
     return GestureDetector(
       onTap: () => setState(() => _mode = idx),
@@ -155,7 +161,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
         child: Text(
           label,
           style: TextStyle(
-            color: selected ? Colors.white : AppColors.textPrimary,
+            color: selected ? Colors.white : AppColors.textPri(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -163,11 +169,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  Widget _manualForm() {
+  Widget _manualForm(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(14),
         border: const Border(
           left: BorderSide(color: AppColors.primaryDark, width: 4),
@@ -176,23 +182,25 @@ class _AddItemScreenState extends State<AddItemScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _formLabel('Item name'),
+          _formLabel(context, 'Item name'),
           const SizedBox(height: 6),
           const TextField(
-            decoration: InputDecoration(hintText: 'e.g. Fresh Chicken Breast'),
+            decoration:
+                InputDecoration(hintText: 'e.g. Fresh Chicken Breast'),
           ),
           const SizedBox(height: 14),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _formLabel('Quantity'),
+                    _formLabel(context, 'Quantity'),
                     const SizedBox(height: 6),
                     Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.divider),
+                        border: Border.all(color: AppColors.divider(context)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -206,9 +214,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
                           Expanded(
                             child: Text('$_qty',
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600)),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPri(context),
+                                )),
                           ),
                           IconButton(
                             icon: const Icon(Icons.add,
@@ -226,11 +236,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _formLabel('Category'),
+                    _formLabel(context, 'Category'),
                     const SizedBox(height: 6),
                     DropdownButtonFormField<String>(
-                      value: _category,
-                      decoration: const InputDecoration(),
+                      initialValue: _category, // FIXED: was `value:` (deprecated)
+                      isExpanded: true,
+                      decoration: const InputDecoration(isDense: true),
                       items: const [
                         'Meat & Poultry',
                         'Dairy',
@@ -249,7 +260,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             ],
           ),
           const SizedBox(height: 14),
-          _formLabel('Expiry Date'),
+          _formLabel(context, 'Expiry Date'),
           const SizedBox(height: 6),
           const TextField(
             decoration: InputDecoration(
@@ -261,7 +272,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.infoBg,
+              color: AppColors.infoBg(context),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -274,18 +285,22 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Best-before suggestion',
-                          style: TextStyle(fontWeight: FontWeight.w700)),
+                      Text('Best-before suggestion',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPri(context),
+                          )),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'Fresh poultry typically lasts 2-3 days in the fridge. Suggested date: Oct 27, 2023.',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(
+                            fontSize: 13, color: AppColors.textPri(context)),
                       ),
                       const SizedBox(height: 8),
                       GestureDetector(
                         onTap: () {},
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Text('Apply suggestion',
                                 style: TextStyle(
                                   color: AppColors.primaryDark,
@@ -308,24 +323,30 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  Widget _barcodePlaceholder() {
+  Widget _barcodePlaceholder(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.divider, width: 1.5),
+        border: Border.all(color: AppColors.divider(context), width: 1.5),
       ),
       child: Column(
-        children: const [
-          Icon(Icons.qr_code_scanner, size: 80, color: AppColors.primaryDark),
-          SizedBox(height: 16),
+        children: [
+          const Icon(Icons.qr_code_scanner,
+              size: 80, color: AppColors.primaryDark),
+          const SizedBox(height: 16),
           Text('Point camera at barcode',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-          SizedBox(height: 8),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: AppColors.textPri(context),
+              )),
+          const SizedBox(height: 8),
           Text(
             'Scanner will be enabled in the next build.',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+            style: TextStyle(
+                color: AppColors.textSec(context), fontSize: 13),
             textAlign: TextAlign.center,
           ),
         ],
@@ -333,12 +354,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  Widget _recentCard(String category, String name, String qty, Color color) {
+  Widget _recentCard(BuildContext context, String category, String name,
+      String qty, Color color) {
     return Container(
       width: 140,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -352,14 +374,15 @@ class _AddItemScreenState extends State<AddItemScreen> {
               )),
           const SizedBox(height: 4),
           Text(name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 15,
+                color: AppColors.textPri(context),
               )),
           const SizedBox(height: 4),
           Text(qty,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: AppColors.textSec(context),
                 fontSize: 12,
               )),
         ],
@@ -367,10 +390,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  Widget _formLabel(String s) => Text(s,
-      style: const TextStyle(
+  Widget _formLabel(BuildContext context, String s) => Text(s,
+      style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 13,
-        color: AppColors.textSecondary,
+        color: AppColors.textSec(context),
       ));
 }

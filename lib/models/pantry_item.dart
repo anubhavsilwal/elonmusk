@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 enum ExpiryStatus { safe, soon, expired }
 
 class PantryItem {
@@ -7,9 +5,9 @@ class PantryItem {
   final String category;
   final String quantity;
   final int daysUntilExpiry;
-  final String expiryLabel; // e.g. "Exp: Oct 24"
+  final String expiryLabel;
   final String? imageAsset;
-  final double progress;     // 0.0 -> 1.0, how full the colored progress bar is
+  final double progress;
 
   const PantryItem({
     required this.name,

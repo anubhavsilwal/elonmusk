@@ -9,34 +9,36 @@ class SignupStep1Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 children: [
-                  const AppLogoIcon(size: 36),
-                  const SizedBox(width: 8),
-                  const AppLogoText(height: 30),
+                  AppLogoIcon(size: 36),
+                  SizedBox(width: 8),
+                  AppLogoText(height: 30),
                 ],
               ),
               const SizedBox(height: 24),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Step 1 of 3',
+                  Text('Step 1 of 3',
                       style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primaryDark)),
-                  const Text('Account Basics',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryDark,
+                      )),
+                  Text('Account Basics',
                       style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primaryDark)),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryDark,
+                      )),
                 ],
               ),
               const SizedBox(height: 6),
@@ -46,17 +48,21 @@ class SignupStep1Screen extends StatelessWidget {
                   value: 0.33,
                   minHeight: 5,
                   backgroundColor: Color(0xFFCFE7D2),
-                  valueColor: AlwaysStoppedAnimation(AppColors.primaryDark),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryDark),
                 ),
               ),
               const SizedBox(height: 24),
-              const Text('Create your account',
+              Text('Create your account',
                   style: TextStyle(
-                      fontSize: 26, fontWeight: FontWeight.w700)),
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPri(context),
+                  )),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 "Let's start with some basic information to get your pantry organized.",
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                style: TextStyle(
+                    color: AppColors.textSec(context), fontSize: 14),
               ),
               const SizedBox(height: 20),
               ClipRRect(
@@ -76,7 +82,7 @@ class SignupStep1Screen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              _label('Full Name'),
+              _label(context, 'Full Name'),
               const SizedBox(height: 6),
               const TextField(
                 decoration: InputDecoration(
@@ -85,7 +91,7 @@ class SignupStep1Screen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              _label('Email Address'),
+              _label(context, 'Email Address'),
               const SizedBox(height: 6),
               const TextField(
                 decoration: InputDecoration(
@@ -94,7 +100,7 @@ class SignupStep1Screen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              _label('Password'),
+              _label(context, 'Password'),
               const SizedBox(height: 6),
               TextField(
                 obscureText: true,
@@ -108,13 +114,16 @@ class SignupStep1Screen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
+              // Birthdate + Gender — use LayoutBuilder to avoid right overflow.
+              LayoutBuilder(
+                builder: (_, c) {
+                  // On narrow screens, stack vertically. Otherwise side-by-side.
+                  final stacked = c.maxWidth < 340;
+                  if (stacked) {
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _label('Birthdate'),
+                        _label(context, 'Birthdate'),
                         const SizedBox(height: 6),
                         const TextField(
                           decoration: InputDecoration(
@@ -122,15 +131,8 @@ class SignupStep1Screen extends StatelessWidget {
                             suffixIcon: Icon(Icons.calendar_today, size: 18),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label('Gender'),
+                        const SizedBox(height: 16),
+                        _label(context, 'Gender'),
                         const SizedBox(height: 6),
                         DropdownButtonFormField<String>(
                           decoration: const InputDecoration(),
@@ -139,15 +141,57 @@ class SignupStep1Screen extends StatelessWidget {
                             DropdownMenuItem(value: 'M', child: Text('Male')),
                             DropdownMenuItem(value: 'F', child: Text('Female')),
                             DropdownMenuItem(value: 'O', child: Text('Other')),
-                            DropdownMenuItem(
-                                value: 'N', child: Text('Prefer not to say')),
+                            DropdownMenuItem(value: 'N', child: Text('Prefer not to say')),
                           ],
                           onChanged: (_) {},
                         ),
                       ],
-                    ),
-                  ),
-                ],
+                    );
+                  }
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _label(context, 'Birthdate'),
+                            const SizedBox(height: 6),
+                            const TextField(
+                              decoration: InputDecoration(
+                                hintText: 'mm/dd/yyyy',
+                                isDense: true,
+                                suffixIcon: Icon(Icons.calendar_today, size: 18),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _label(context, 'Gender'),
+                            const SizedBox(height: 6),
+                            DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              decoration: const InputDecoration(isDense: true),
+                              hint: const Text('Select'),
+                              items: const [
+                                DropdownMenuItem(value: 'M', child: Text('Male')),
+                                DropdownMenuItem(value: 'F', child: Text('Female')),
+                                DropdownMenuItem(value: 'O', child: Text('Other')),
+                                DropdownMenuItem(value: 'N', child: Text('Other...')),
+                              ],
+                              onChanged: (_) {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 28),
               ElevatedButton(
@@ -170,9 +214,10 @@ class SignupStep1Screen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: RichText(
-                    text: const TextSpan(
-                      style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
-                      children: [
+                    text: TextSpan(
+                      style: TextStyle(
+                          color: AppColors.textPri(context), fontSize: 14),
+                      children: const [
                         TextSpan(text: 'Already have an account? '),
                         TextSpan(
                           text: 'Log in',
@@ -187,11 +232,12 @@ class SignupStep1Screen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Center(
+              Center(
                 child: Text.rich(
                   TextSpan(
-                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                    children: [
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.textSec(context)),
+                    children: const [
                       TextSpan(text: "By continuing, you agree to ShelfLife's "),
                       TextSpan(
                         text: 'Terms of Service',
@@ -216,8 +262,12 @@ class SignupStep1Screen extends StatelessWidget {
     );
   }
 
-  Widget _label(String s) => Text(
+  Widget _label(BuildContext context, String s) => Text(
         s,
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: AppColors.textPri(context),
+        ),
       );
 }

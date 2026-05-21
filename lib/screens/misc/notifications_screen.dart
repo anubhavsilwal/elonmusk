@@ -31,28 +31,33 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         title: const AppLogoText(height: 28),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryDark),
+          icon: Icon(Icons.arrow_back,
+              color: isDark ? AppColors.primary : AppColors.primaryDark),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const Text(
+          Text(
             'Notifications',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPri(context)),
           ),
           const SizedBox(height: 16),
           ..._items.map((n) => Container(
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.card(context),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
@@ -75,25 +80,26 @@ class NotificationsScreen extends StatelessWidget {
                         children: [
                           Text(
                             n['title'] as String,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
+                              color: AppColors.textPri(context),
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             n['subtitle'] as String,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.textSecondary,
+                              color: AppColors.textSec(context),
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             n['time'] as String,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
-                              color: AppColors.textMuted,
+                              color: AppColors.textMut(context),
                             ),
                           ),
                         ],

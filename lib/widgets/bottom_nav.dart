@@ -3,7 +3,8 @@ import '../theme/app_colors.dart';
 import '../screens/main/main_shell.dart';
 
 /// Bottom navigation bar shared by all main-app screens.
-/// 5 tabs: Home / Pantry / [+Add FAB center] / Recipe / Profile
+/// 5 tabs: Home / Pantry / [+Add FAB center] / Recipe / Profile.
+/// Active indicator is a CIRCLE (was an oval in v1).
 class ShelfBottomNav extends StatelessWidget {
   final int currentIndex; // 0=Home, 1=Pantry, 2=Add, 3=Recipe, 4=Profile
 
@@ -25,10 +26,10 @@ class ShelfBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, -2),
           ),
@@ -37,18 +38,15 @@ class ShelfBottomNav extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 72,
+          height: 64, // tightened to prevent overflow
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _navItem(context, 0, Icons.home_outlined, Icons.home, 'Home'),
-              _navItem(context, 1, Icons.kitchen_outlined, Icons.kitchen,
-                  'Pantry'),
+              _navItem(context, 1, Icons.kitchen_outlined, Icons.kitchen, 'Pantry'),
               _addButton(context),
-              _navItem(context, 3, Icons.receipt_long_outlined,
-                  Icons.receipt_long, 'Recipe'),
-              _navItem(context, 4, Icons.person_outline, Icons.person,
-                  'Profile'),
+              _navItem(context, 3, Icons.receipt_long_outlined, Icons.receipt_long, 'Recipe'),
+              _navItem(context, 4, Icons.person_outline, Icons.person, 'Profile'),
             ],
           ),
         ),
@@ -64,29 +62,30 @@ class ShelfBottomNav extends StatelessWidget {
         onTap: () => _go(context, index),
         borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (selected)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18, vertical: 4),
-                  decoration: BoxDecoration(
+                  width: 36,
+                  height: 36,
+                  decoration: const BoxDecoration(
                     color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(20),
+                    shape: BoxShape.circle, // CIRCLE not oval
                   ),
-                  child: Icon(iconActive, color: Colors.white, size: 22),
+                  child: Icon(iconActive, color: Colors.white, size: 20),
                 )
               else
-                Icon(icon, color: AppColors.textPrimary, size: 24),
-              const SizedBox(height: 4),
+                Icon(icon, color: AppColors.textPri(context), size: 22),
+              const SizedBox(height: 2),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 10,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textPri(context),
                 ),
               ),
             ],
@@ -102,33 +101,34 @@ class ShelfBottomNav extends StatelessWidget {
       child: InkWell(
         onTap: () => _go(context, 2),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 2),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.primaryDeeper, // DARKER green
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      blurRadius: 12,
+                      color: AppColors.primaryDeeper.withValues(alpha: 0.35),
+                      blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                child: const Icon(Icons.add, color: Colors.white, size: 28),
+                child: const Icon(Icons.add, color: Colors.white, size: 24),
               ),
               const SizedBox(height: 2),
               Text(
                 'Add',
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 10,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textPri(context),
                 ),
               ),
             ],

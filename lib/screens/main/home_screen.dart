@@ -15,50 +15,68 @@ class HomeScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
         children: [
-          const Text('Pantry Insights',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+          Text('Pantry Insights',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPri(context),
+              )),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _statCard(
-                label: 'Total Items',
-                value: '124',
-                trailing: const Row(
-                  children: [
-                    Icon(Icons.trending_up, color: AppColors.safe, size: 16),
-                    SizedBox(width: 4),
-                    Text('+12%',
-                      style: TextStyle(color: AppColors.safe,
-                        fontSize: 12, fontWeight: FontWeight.w600)),
-                  ],
+              Expanded(
+                child: _statCard(
+                  context: context,
+                  label: 'Total Items',
+                  value: '124',
+                  trailing: const Row(
+                    children: [
+                      Icon(Icons.trending_up, color: AppColors.safe, size: 16),
+                      SizedBox(width: 4),
+                      Text('+12%',
+                          style: TextStyle(
+                              color: AppColors.safe,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
-              )),
+              ),
               const SizedBox(width: 12),
-              Expanded(child: _statCard(
-                label: 'Expiring Soon',
-                value: '08',
-                valueColor: AppColors.warning,
-                trailing: const Text('Next 48h',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-              )),
+              Expanded(
+                child: _statCard(
+                  context: context,
+                  label: 'Expiring Soon',
+                  value: '08',
+                  valueColor: AppColors.warning,
+                  trailing: Text('Next 48h',
+                      style: TextStyle(
+                          color: AppColors.textSec(context), fontSize: 12)),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
-          _wasteCard(),
+          _wasteCard(context),
           const SizedBox(height: 16),
-          _suggestedGroceriesCard(),
+          _suggestedGroceriesCard(context),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Use First',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              Text('Use First',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPri(context),
+                  )),
               GestureDetector(
                 onTap: () {},
                 child: const Text('View All',
                     style: TextStyle(
-                        color: AppColors.primaryDark,
-                        fontWeight: FontWeight.w600)),
+                      color: AppColors.primaryDark,
+                      fontWeight: FontWeight.w600,
+                    )),
               ),
             ],
           ),
@@ -73,29 +91,30 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _statCard({
+    required BuildContext context,
     required String label,
     required String value,
-    Color valueColor = AppColors.textPrimary,
+    Color? valueColor,
     Widget? trailing,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 13)),
+              style: TextStyle(
+                  color: AppColors.textSec(context), fontSize: 13)),
           const SizedBox(height: 8),
           Text(value,
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w700,
-                color: valueColor,
+                color: valueColor ?? AppColors.textPri(context),
               )),
           const SizedBox(height: 4),
           if (trailing != null) trailing,
@@ -104,11 +123,11 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _wasteCard() {
+  Widget _wasteCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -116,12 +135,12 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('Wasted Items',
                     style: TextStyle(
-                        color: AppColors.textSecondary, fontSize: 13)),
-                SizedBox(height: 8),
-                Text('14.2%',
+                        color: AppColors.textSec(context), fontSize: 13)),
+                const SizedBox(height: 8),
+                const Text('14.2%',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
@@ -136,7 +155,7 @@ class HomeScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF0F0),
+                color: AppColors.danger.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: BarChart(
@@ -161,7 +180,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  static BarChartGroupData _bar(int x, double y, {Color color = const Color(0xFFF77272)}) {
+  static BarChartGroupData _bar(int x, double y,
+      {Color color = const Color(0xFFF77272)}) {
     return BarChartGroupData(
       x: x,
       barRods: [
@@ -175,22 +195,26 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _suggestedGroceriesCard() {
+  Widget _suggestedGroceriesCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text('Suggested Groceries',
                   style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.w700)),
-              Icon(Icons.shopping_cart_outlined, color: AppColors.textPrimary),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPri(context),
+                  )),
+              Icon(Icons.shopping_cart_outlined,
+                  color: AppColors.textPri(context)),
             ],
           ),
           const SizedBox(height: 12),
@@ -200,7 +224,7 @@ class HomeScreen extends StatelessWidget {
                 ? AppColors.danger
                 : type == 'low'
                     ? AppColors.warning
-                    : AppColors.textSecondary;
+                    : AppColors.textSec(context);
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Column(
@@ -212,8 +236,11 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(g['name']!,
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w600)),
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPri(context),
+                                )),
                             const SizedBox(height: 2),
                             Text(g['reason']!,
                                 style: TextStyle(
@@ -231,9 +258,10 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   if (g != SampleData.suggestedGroceries.last)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Divider(height: 1),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Divider(
+                          height: 1, color: AppColors.divider(context)),
                     ),
                 ],
               ),

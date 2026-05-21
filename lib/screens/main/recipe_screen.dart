@@ -23,8 +23,12 @@ class _RecipeScreenState extends State<RecipeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Use First Suggestions',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              Text('Use First Suggestions',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPri(context),
+                  )),
               GestureDetector(
                 onTap: () {},
                 child: const Text('View All',
@@ -46,8 +50,12 @@ class _RecipeScreenState extends State<RecipeScreen> {
             ],
           ),
           const SizedBox(height: 24),
-          const Text('Find by Ingredients',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+          Text('Find by Ingredients',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPri(context),
+              )),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -70,24 +78,28 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     ),
                   )),
               ActionChip(
-                label: const Icon(Icons.add,
-                    size: 18, color: AppColors.textPrimary),
-                backgroundColor: Colors.white,
+                label: Icon(Icons.add,
+                    size: 18, color: AppColors.textPri(context)),
+                backgroundColor: AppColors.card(context),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: const BorderSide(color: AppColors.divider),
+                  side: BorderSide(color: AppColors.divider(context)),
                 ),
                 onPressed: () {},
               ),
             ],
           ),
           const SizedBox(height: 24),
-          const Text('Matches for you',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+          Text('Matches for you',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPri(context),
+              )),
           const SizedBox(height: 12),
           ...SampleData.matches.map((r) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: _matchCard(r),
+                child: _matchCard(context, r),
               )),
         ],
       ),
@@ -138,8 +150,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.danger,
                   borderRadius: BorderRadius.circular(6),
@@ -173,9 +185,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     return Container(
       height: 130,
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
       child: Stack(
         children: [
           Positioned.fill(
@@ -220,11 +230,11 @@ class _RecipeScreenState extends State<RecipeScreen> {
     );
   }
 
-  Widget _matchCard(Recipe r) {
+  Widget _matchCard(BuildContext context, Recipe r) {
     final accent = r.allFound ? AppColors.safe : AppColors.warning;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(14),
         border: Border(left: BorderSide(color: accent, width: 5)),
       ),
@@ -241,9 +251,9 @@ class _RecipeScreenState extends State<RecipeScreen> {
               errorBuilder: (_, __, ___) => Container(
                 width: 70,
                 height: 70,
-                color: AppColors.chipBg,
-                child: const Icon(Icons.restaurant,
-                    color: AppColors.textMuted),
+                color: AppColors.chipBg(context),
+                child: Icon(Icons.restaurant,
+                    color: AppColors.textMut(context)),
               ),
             ),
           ),
@@ -253,12 +263,15 @@ class _RecipeScreenState extends State<RecipeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(r.title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 16)),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: AppColors.textPri(context),
+                    )),
                 const SizedBox(height: 4),
                 Text('${r.time} • ${r.difficulty}',
-                    style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 13)),
+                    style: TextStyle(
+                        color: AppColors.textSec(context), fontSize: 13)),
                 const SizedBox(height: 6),
                 if (r.allFound)
                   Container(
@@ -295,10 +308,10 @@ class _RecipeScreenState extends State<RecipeScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(r.missingNote ?? '',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontStyle: FontStyle.italic,
                             fontSize: 12,
-                            color: AppColors.textSecondary,
+                            color: AppColors.textSec(context),
                           )),
                     ],
                   ),

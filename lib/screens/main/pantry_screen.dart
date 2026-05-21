@@ -13,7 +13,7 @@ class PantryScreen extends StatefulWidget {
 
 class _PantryScreenState extends State<PantryScreen> {
   String _filter = 'All Items';
-  final _filters = const ['All Items', 'Dairy', 'Produce', 'Meat'];
+  static const _filters = ['All Items', 'Dairy', 'Produce', 'Meat'];
 
   List<PantryItem> get _filteredItems {
     if (_filter == 'All Items') return SampleData.pantry;
@@ -32,7 +32,7 @@ class _PantryScreenState extends State<PantryScreen> {
               prefixIcon: const Icon(Icons.search),
               hintText: 'Search your pantry...',
               filled: true,
-              fillColor: Colors.white,
+              fillColor: AppColors.card(context),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(28),
                 borderSide: BorderSide.none,
@@ -60,7 +60,7 @@ class _PantryScreenState extends State<PantryScreen> {
                       decoration: BoxDecoration(
                         color: selected
                             ? AppColors.primaryDark
-                            : AppColors.chipUnselected,
+                            : AppColors.chipUnsel(context),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -68,7 +68,7 @@ class _PantryScreenState extends State<PantryScreen> {
                         style: TextStyle(
                           color: selected
                               ? Colors.white
-                              : AppColors.textPrimary,
+                              : AppColors.textPri(context),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

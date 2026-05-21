@@ -25,17 +25,19 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         title: const AppLogoText(height: 28),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryDark),
+          icon: Icon(Icons.arrow_back,
+              color: isDark ? AppColors.primary : AppColors.primaryDark),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline, color: AppColors.textPrimary),
+            icon: Icon(Icons.help_outline, color: AppColors.textPri(context)),
             onPressed: () {},
           ),
         ],
@@ -51,18 +53,20 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('ONBOARDING',
+                      children: [
+                        const Text('ONBOARDING',
                             style: TextStyle(
-                                fontSize: 12,
-                                letterSpacing: 1.2,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primaryDark)),
+                              fontSize: 12,
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.primaryDark,
+                            )),
                         Text('Step 2 of 3',
                             style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary)),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPri(context),
+                            )),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -73,18 +77,21 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                         minHeight: 5,
                         backgroundColor: Color(0xFFCFE7D2),
                         valueColor:
-                            AlwaysStoppedAnimation(AppColors.primaryDark),
+                            AlwaysStoppedAnimation<Color>(AppColors.primaryDark),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text('Dietary Preferences',
+                    Text('Dietary Preferences',
                         style: TextStyle(
-                            fontSize: 26, fontWeight: FontWeight.w700)),
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPri(context),
+                        )),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Select all that apply. This helps us suggest the best recipes and pantry tips for you.',
                       style: TextStyle(
-                          color: AppColors.textSecondary, fontSize: 14),
+                          color: AppColors.textSec(context), fontSize: 14),
                     ),
                     const SizedBox(height: 20),
                     GridView.builder(
@@ -113,7 +120,7 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 150),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColors.card(context),
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
                                 color: isSelected
@@ -142,9 +149,10 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                                       const SizedBox(height: 10),
                                       Text(
                                         label,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 15,
+                                          color: AppColors.textPri(context),
                                         ),
                                       ),
                                     ],
@@ -169,20 +177,20 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.infoBg,
+                        color: AppColors.infoBg(context),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
-                        children: const [
-                          Icon(Icons.info_outline,
+                        children: [
+                          const Icon(Icons.info_outline,
                               color: AppColors.primaryDark, size: 22),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               'You can always update these preferences later in your Profile settings.',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPri(context),
                               ),
                             ),
                           ),
@@ -194,7 +202,7 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                 ),
               ),
             ),
-            const Divider(height: 1),
+            Divider(height: 1, color: AppColors.divider(context)),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
               child: Row(

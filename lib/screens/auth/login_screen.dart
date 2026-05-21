@@ -23,12 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Pantry header image
               SizedBox(
                 height: 220,
                 width: double.infinity,
@@ -49,12 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               const AppLogoText(height: 38),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Freshness at your fingertips',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textPrimary,
-                ),
+                style: TextStyle(fontSize: 14, color: AppColors.textPri(context)),
               ),
               const SizedBox(height: 28),
               Padding(
@@ -64,8 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     OutlinedButton.icon(
                       onPressed: _login,
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppColors.divider),
-                        foregroundColor: AppColors.textPrimary,
+                        side: BorderSide(color: AppColors.divider(context)),
+                        foregroundColor: AppColors.textPri(context),
                       ),
                       icon: const Icon(Icons.g_mobiledata,
                           color: Colors.red, size: 32),
@@ -82,17 +78,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
                     Row(
-                      children: const [
-                        Expanded(child: Divider()),
+                      children: [
+                        const Expanded(child: Divider()),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: Text('OR EMAIL',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textSecondary,
-                                  letterSpacing: 1)),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'OR EMAIL',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSec(context),
+                              letterSpacing: 1,
+                            ),
+                          ),
                         ),
-                        Expanded(child: Divider()),
+                        const Expanded(child: Divider()),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -100,13 +99,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Email or Username',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: AppColors.textPri(context),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
-                    TextField(
-                      decoration: const InputDecoration(
+                    const TextField(
+                      decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person_outline),
                         hintText: 'Enter your email',
                       ),
@@ -114,16 +116,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('Password',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 14)),
-                        Text('Forgot Password?',
-                            style: TextStyle(
-                              color: AppColors.primaryDark,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            )),
+                      children: [
+                        Text(
+                          'Password',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: AppColors.textPri(context),
+                          ),
+                        ),
+                        const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: AppColors.primaryDark,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -136,7 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           icon: Icon(_obscure
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined),
-                          onPressed: () => setState(() => _obscure = !_obscure),
+                          onPressed: () =>
+                              setState(() => _obscure = !_obscure),
                         ),
                       ),
                     ),
@@ -156,9 +166,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (_) => const SignupStep1Screen()),
                       ),
                       child: RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: AppColors.textPri(context), fontSize: 14),
+                          children: const [
                             TextSpan(text: "Don't have an account? "),
                             TextSpan(
                               text: 'Register',

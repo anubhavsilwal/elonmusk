@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'theme/app_theme.dart';
+import 'theme/theme_controller.dart';
 import 'screens/misc/splash_screen.dart';
 
 void main() {
@@ -19,11 +20,18 @@ class ShelfLifeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ShelfLife',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      home: const SplashScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeController,
+      builder: (_, mode, __) {
+        return MaterialApp(
+          title: 'ShelfLife',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: mode,
+          home: const SplashScreen(),
+        );
+      },
     );
   }
 }

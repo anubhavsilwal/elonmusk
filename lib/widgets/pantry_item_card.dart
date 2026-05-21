@@ -4,7 +4,7 @@ import '../theme/app_colors.dart';
 
 class PantryItemCard extends StatelessWidget {
   final PantryItem item;
-  final bool compact; // home use-first style if true
+  final bool compact;
   final bool showMenu;
   final VoidCallback? onTap;
 
@@ -34,7 +34,7 @@ class PantryItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.card(context),
           borderRadius: BorderRadius.circular(14),
           border: Border(
             left: BorderSide(color: _statusColor, width: 5),
@@ -51,38 +51,40 @@ class PantryItemCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _itemImage(),
+            _itemImage(context),
             const SizedBox(width: 12),
-            Expanded(child: _itemBody()),
+            Expanded(child: _itemBody(context)),
             if (showMenu)
-              const Icon(Icons.more_vert, color: AppColors.textSecondary),
+              Icon(Icons.more_vert, color: AppColors.textSec(context)),
           ],
         ),
       ),
     );
   }
 
-  Widget _itemImage() {
+  Widget _itemImage(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
         width: 60,
         height: 60,
-        color: const Color(0xFFE5E7EB),
+        color: AppColors.chipBg(context),
         child: item.imageAsset != null
             ? Image.asset(
                 item.imageAsset!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
-                    const Center(child: Text('img', style: TextStyle(
-                      color: AppColors.textMuted, fontSize: 12))),
+                errorBuilder: (_, __, ___) => Center(
+                  child: Text('img',
+                      style: TextStyle(
+                          color: AppColors.textMut(context), fontSize: 12)),
+                ),
               )
             : const Center(child: Text('img')),
       ),
     );
   }
 
-  Widget _itemBody() {
+  Widget _itemBody(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -91,10 +93,10 @@ class PantryItemCard extends StatelessWidget {
             Expanded(
               child: Text(
                 item.name,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textPri(context),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -115,10 +117,7 @@ class PantryItemCard extends StatelessWidget {
         if (!compact)
           Text(
             '${item.category} • ${item.quantity}',
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.textSec(context)),
           ),
         const SizedBox(height: 4),
         if (!compact)
@@ -147,10 +146,7 @@ class PantryItemCard extends StatelessWidget {
         else
           Text(
             item.expiryLabel,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.textSec(context)),
           ),
         const SizedBox(height: 8),
         ClipRRect(
@@ -158,8 +154,8 @@ class PantryItemCard extends StatelessWidget {
           child: LinearProgressIndicator(
             value: item.progress,
             minHeight: 6,
-            backgroundColor: const Color(0xFFEEF2F7),
-            valueColor: AlwaysStoppedAnimation(_statusColor),
+            backgroundColor: AppColors.chipBg(context),
+            valueColor: AlwaysStoppedAnimation<Color>(_statusColor),
           ),
         ),
       ],

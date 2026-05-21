@@ -38,17 +38,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
         title: const AppLogoText(height: 28),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryDark),
+          icon: Icon(Icons.arrow_back,
+              color: isDark ? AppColors.primary : AppColors.primaryDark),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: AppColors.primaryDark),
+            icon: Icon(Icons.add,
+                color: isDark ? AppColors.primary : AppColors.primaryDark),
             onPressed: () => _showAddDialog(),
           ),
         ],
@@ -60,11 +63,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Shopping List',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+                Text('Shopping List',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPri(context),
+                    )),
                 Text('${_items.length} items',
-                    style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 13)),
+                    style: TextStyle(
+                        color: AppColors.textSec(context), fontSize: 13)),
               ],
             ),
           ),
@@ -82,7 +89,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.card(context),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -107,8 +114,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: item.checked
-                                      ? AppColors.textMuted
-                                      : AppColors.textPrimary,
+                                      ? AppColors.textMut(context)
+                                      : AppColors.textPri(context),
                                   decoration: item.checked
                                       ? TextDecoration.lineThrough
                                       : null,
@@ -117,17 +124,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               if (item.note != null) ...[
                                 const SizedBox(height: 2),
                                 Text(item.note!,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.textSec(context),
                                     )),
                               ],
                             ],
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete_outline,
-                              color: AppColors.textSecondary),
+                          icon: Icon(Icons.delete_outline,
+                              color: AppColors.textSec(context)),
                           onPressed: () =>
                               setState(() => _items.removeAt(i)),
                         ),
@@ -142,7 +149,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        color: AppColors.background,
+        color: AppColors.bg(context),
         child: SafeArea(
           top: false,
           child: ElevatedButton.icon(

@@ -12,14 +12,13 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDark ? AppColors.primary : AppColors.primaryDark;
     return AppBar(
       automaticallyImplyLeading: false,
       title: const AppLogoText(height: 30),
       leading: IconButton(
-        icon: const Icon(
-          Icons.shopping_basket_outlined,
-          color: AppColors.primaryDark,
-        ),
+        icon: Icon(Icons.shopping_cart_outlined, color: iconColor),
         onPressed: () {
           Navigator.push(
             context,
@@ -31,10 +30,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          icon: const Icon(
-            Icons.notifications_none,
-            color: AppColors.textPrimary,
-          ),
+          icon: Icon(Icons.notifications_none, color: AppColors.textPri(context)),
           onPressed: () {
             Navigator.push(
               context,
