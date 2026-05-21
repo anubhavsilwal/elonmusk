@@ -97,7 +97,7 @@ class SampleData {
       daysUntilExpiry: 4,
       expiryLabel: 'Expires in 4 days (Oct 26)',
       progress: 0.7,
-      imageAsset: 'assets/items/chicken_breast_2.png',
+      imageAsset: 'assets/items/chicken_breast.png',
     ),
     PantryItem(
       name: 'Large Eggs (12pk)',
