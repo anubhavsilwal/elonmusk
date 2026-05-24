@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../../store/app_store.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/theme_controller.dart';
 import '../../widgets/main_app_bar.dart';
@@ -18,82 +19,120 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final darkOn = themeController.value == ThemeMode.dark;
     return Scaffold(
       appBar: const MainAppBar(),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-        children: [
-          _avatar(),
-          const SizedBox(height: 12),
-          Center(
-            child: Text('Anubhav Silwal',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPri(context),
-                )),
-          ),
-          Center(
-            child: Text('anubhav@shelflife.app',
-                style: TextStyle(
-                    color: AppColors.textSec(context), fontSize: 14)),
-          ),
-          const SizedBox(height: 20),
-          _settingsCard(context, darkOn),
-          const SizedBox(height: 14),
-          _dietaryCard(context),
-          const SizedBox(height: 14),
-          _allergiesCard(context),
-          const SizedBox(height: 14),
-          _analyticsCard(context),
-          const SizedBox(height: 14),
-          _navTile(context, Icons.manage_accounts, 'Edit Profile Details', () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const EditProfileScreen()),
-            );
-          }),
-          const SizedBox(height: 10),
-          _navTile(context, Icons.shield_outlined, 'Privacy & Data', () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PrivacyScreen()),
-            );
-          }),
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: () => Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
-              (_) => false,
-            ),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: AppColors.danger.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(28),
+      body: StoreListener(
+        builder: (ctx) {
+          final darkOn = AppStore.I.darkMode;
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            children: [
+              _avatar(),
+              const SizedBox(height: 12),
+              Center(
+                child: Text('Anubhav Silwal',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPri(context),
+                    )),
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete_outline, color: AppColors.danger),
-                  SizedBox(width: 8),
-                  Text('Delete Account',
-                      style: TextStyle(
-                        color: AppColors.danger,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      )),
-                ],
+              Center(
+                child: Text('anubhav@shelflife.app',
+                    style: TextStyle(
+                        color: AppColors.textSec(context), fontSize: 14)),
               ),
-            ),
+              const SizedBox(height: 20),
+              _settingsCard(context, darkOn),
+              const SizedBox(height: 14),
+              _dietaryCard(context),
+              const SizedBox(height: 14),
+              _allergiesCard(context),
+              const SizedBox(height: 14),
+              _analyticsCard(context),
+              const SizedBox(height: 14),
+              _navTile(context, Icons.manage_accounts, 'Edit Profile Details', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const EditProfileScreen()),
+                );
+              }),
+              const SizedBox(height: 10),
+              _navTile(context, Icons.shield_outlined, 'Privacy & Data', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PrivacyScreen()),
+                );
+              }),
+              const SizedBox(height: 10),
+              _navTile(context, Icons.restart_alt, 'Reset Demo Data', () {
+                _showResetDialog(context);
+              }),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (_) => false,
+                ),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.danger.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.delete_outline, color: AppColors.danger),
+                      SizedBox(width: 8),
+                      Text('Delete Account',
+                          style: TextStyle(
+                            color: AppColors.danger,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Center(
+                child: Text('ShelfLife Version 3.0.0',
+                    style: TextStyle(
+                        color: AppColors.textMut(context), fontSize: 12)),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showResetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Reset Demo Data?'),
+        content: const Text(
+            'This wipes the pantry, shopping list and favorites, then reloads sample data. Useful for demos.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
-          const SizedBox(height: 12),
-          Center(
-            child: Text('ShelfLife Version 2.4.0 (2024)',
-                style: TextStyle(
-                    color: AppColors.textMut(context), fontSize: 12)),
+          ElevatedButton(
+            onPressed: () async {
+              await AppStore.I.resetAndReseed();
+              if (context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Demo data reset.')),
+                );
+              }
+            },
+            child: const Text('Reset'),
           ),
         ],
       ),
@@ -165,7 +204,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.dark_mode_outlined, color: AppColors.textPri(context)),
+              Icon(Icons.dark_mode_outlined,
+                  color: AppColors.textPri(context)),
               const SizedBox(width: 12),
               Expanded(
                 child: Text('Dark Mode',
@@ -175,9 +215,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Switch(
                 value: darkOn,
                 onChanged: (v) {
+                  AppStore.I.setDarkMode(v);
                   themeController.value =
                       v ? ThemeMode.dark : ThemeMode.light;
-                  setState(() {});
                 },
                 activeThumbColor: AppColors.primary,
               ),
@@ -348,13 +388,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       v.toInt() >= labels.length) {
                                     return const SizedBox.shrink();
                                   }
-                                  return Text(
-                                    labels[v.toInt()],
-                                    style: TextStyle(
-                                      color: AppColors.textSec(context),
-                                      fontSize: 11,
-                                    ),
-                                  );
+                                  return Text(labels[v.toInt()],
+                                      style: TextStyle(
+                                        color: AppColors.textSec(context),
+                                        fontSize: 11,
+                                      ));
                                 },
                                 reservedSize: 20,
                               ),
@@ -406,26 +444,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               sectionsSpace: 0,
                               centerSpaceRadius: 30,
                               startDegreeOffset: 270,
-                              sections: [
-                                PieChartSectionData(
-                                  value: 60,
-                                  color: AppColors.primaryDark,
-                                  radius: 14,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
-                                  value: 40,
-                                  color: AppColors.primaryLight,
-                                  radius: 14,
-                                  showTitle: false,
-                                ),
-                              ],
+                              sections: _pieSections(),
                             ),
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('42',
+                              Text('${AppStore.I.totalItemCount}',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
@@ -458,6 +483,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  List<PieChartSectionData> _pieSections() {
+    final items = AppStore.I.pantryItems;
+    if (items.isEmpty) {
+      return [
+        PieChartSectionData(
+          value: 100,
+          color: AppColors.chipBg(context),
+          radius: 14,
+          showTitle: false,
+        ),
+      ];
+    }
+    final produce = items.where((i) => i.category == 'Produce').length;
+    final dairy = items.where((i) => i.category == 'Dairy').length;
+    return [
+      PieChartSectionData(
+        value: produce.toDouble().clamp(0.1, 100),
+        color: AppColors.primaryDark,
+        radius: 14,
+        showTitle: false,
+      ),
+      PieChartSectionData(
+        value: dairy.toDouble().clamp(0.1, 100),
+        color: AppColors.primaryLight,
+        radius: 14,
+        showTitle: false,
+      ),
+    ];
   }
 
   Widget _pill(String label, Color bg, Color fg) {

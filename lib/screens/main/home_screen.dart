@@ -1,9 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../../data/sample_data.dart';
+import '../../store/app_store.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/main_app_bar.dart';
 import '../../widgets/pantry_item_card.dart';
+import '../pantry_detail/pantry_item_sheet.dart';
+import '../recipes/use_first_all_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,80 +14,113 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MainAppBar(),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-        children: [
-          Text('Pantry Insights',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPri(context),
-              )),
-          const SizedBox(height: 12),
-          Row(
+      body: StoreListener(
+        builder: (ctx) {
+          final total = AppStore.I.totalItemCount;
+          final expiringSoon = AppStore.I.expiringSoonCount;
+          final useFirst = AppStore.I.useFirstItems;
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
             children: [
-              Expanded(
-                child: _statCard(
-                  context: context,
-                  label: 'Total Items',
-                  value: '124',
-                  trailing: const Row(
-                    children: [
-                      Icon(Icons.trending_up, color: AppColors.safe, size: 16),
-                      SizedBox(width: 4),
-                      Text('+12%',
-                          style: TextStyle(
-                              color: AppColors.safe,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _statCard(
-                  context: context,
-                  label: 'Expiring Soon',
-                  value: '08',
-                  valueColor: AppColors.warning,
-                  trailing: Text('Next 48h',
-                      style: TextStyle(
-                          color: AppColors.textSec(context), fontSize: 12)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _wasteCard(context),
-          const SizedBox(height: 16),
-          _suggestedGroceriesCard(context),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Use First',
+              Text('Pantry Insights',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPri(context),
                   )),
-              GestureDetector(
-                onTap: () {},
-                child: const Text('View All',
-                    style: TextStyle(
-                      color: AppColors.primaryDark,
-                      fontWeight: FontWeight.w600,
-                    )),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _statCard(
+                      context: context,
+                      label: 'Total Items',
+                      value: '$total',
+                      trailing: const Row(
+                        children: [
+                          Icon(Icons.trending_up,
+                              color: AppColors.safe, size: 16),
+                          SizedBox(width: 4),
+                          Text('+12%',
+                              style: TextStyle(
+                                  color: AppColors.safe,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _statCard(
+                      context: context,
+                      label: 'Expiring Soon',
+                      value: expiringSoon.toString().padLeft(2, '0'),
+                      valueColor: AppColors.warning,
+                      trailing: Text('Next 48h',
+                          style: TextStyle(
+                              color: AppColors.textSec(context),
+                              fontSize: 12)),
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(height: 12),
+              _wasteCard(context),
+              const SizedBox(height: 16),
+              _suggestedGroceriesCard(context),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Use First',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPri(context),
+                      )),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const UseFirstAllScreen()),
+                    ),
+                    child: const Text('View All',
+                        style: TextStyle(
+                          color: AppColors.primaryDark,
+                          fontWeight: FontWeight.w600,
+                        )),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (useFirst.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppColors.card(context),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'No items in pantry yet. Add some!',
+                      style: TextStyle(color: AppColors.textSec(context)),
+                    ),
+                  ),
+                )
+              else
+                ...useFirst.map((item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: PantryItemCard(
+                        item: item,
+                        compact: true,
+                        onTap: () =>
+                            showPantryItemSheet(context, existing: item),
+                      ),
+                    )),
             ],
-          ),
-          const SizedBox(height: 12),
-          ...SampleData.useFirst.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: PantryItemCard(item: item, compact: true),
-              )),
-        ],
+          );
+        },
       ),
     );
   }
@@ -196,6 +231,28 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _suggestedGroceriesCard(BuildContext context) {
+    // Build suggestions from live store: expired or expiring-soon items
+    final expired = AppStore.I.pantryItems
+        .where((i) => i.daysUntilExpiry <= 0)
+        .take(2)
+        .toList();
+    final lowStock = AppStore.I.pantryItems
+        .where((i) => i.daysUntilExpiry > 0 && i.daysUntilExpiry <= 3)
+        .take(1)
+        .toList();
+    final suggestions = [
+      ...expired.map((i) => {
+            'name': i.name,
+            'reason': 'Expired',
+            'type': 'expired',
+          }),
+      ...lowStock.map((i) => {
+            'name': i.name,
+            'reason': 'Expiring in ${i.daysUntilExpiry} day${i.daysUntilExpiry == 1 ? '' : 's'}',
+            'type': 'low',
+          }),
+    ];
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -218,55 +275,60 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          ...SampleData.suggestedGroceries.map((g) {
-            final type = g['type']!;
-            final reasonColor = type == 'expired'
-                ? AppColors.danger
-                : type == 'low'
-                    ? AppColors.warning
-                    : AppColors.textSec(context);
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(g['name']!,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPri(context),
-                                )),
-                            const SizedBox(height: 2),
-                            Text(g['reason']!,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: reasonColor,
-                                  fontWeight: type != 'recipe'
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
-                                )),
-                          ],
+          if (suggestions.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text('Nothing to restock right now.',
+                  style: TextStyle(color: AppColors.textSec(context))),
+            )
+          else
+            ...suggestions.asMap().entries.map((entry) {
+              final g = entry.value;
+              final last = entry.key == suggestions.length - 1;
+              final type = g['type']!;
+              final reasonColor = type == 'expired'
+                  ? AppColors.danger
+                  : AppColors.warning;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(g['name']!,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPri(context),
+                                  )),
+                              const SizedBox(height: 2),
+                              Text(g['reason']!,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: reasonColor,
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Icon(Icons.add_circle_outline,
-                          color: AppColors.primary, size: 28),
-                    ],
-                  ),
-                  if (g != SampleData.suggestedGroceries.last)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Divider(
-                          height: 1, color: AppColors.divider(context)),
+                        const Icon(Icons.add_circle_outline,
+                            color: AppColors.primary, size: 28),
+                      ],
                     ),
-                ],
-              ),
-            );
-          }),
+                    if (!last)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Divider(
+                            height: 1, color: AppColors.divider(context)),
+                      ),
+                  ],
+                ),
+              );
+            }),
         ],
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
-import '../../widgets/app_logo.dart';
+import '../../widgets/onboarding_header.dart';
 import 'signup_step3_screen.dart';
 
 class SignupStep2Screen extends StatefulWidget {
@@ -12,7 +12,7 @@ class SignupStep2Screen extends StatefulWidget {
 class _SignupStep2ScreenState extends State<SignupStep2Screen> {
   final Set<String> _selected = {'Vegan'};
 
-  final _options = const [
+  static const _options = [
     {'label': 'Vegan', 'icon': Icons.eco, 'color': AppColors.primaryLight, 'iconColor': AppColors.primaryDark},
     {'label': 'Keto', 'icon': Icons.flash_on, 'color': Color(0xFFFFF3E0), 'iconColor': Color(0xFFB45309)},
     {'label': 'Vegetarian', 'icon': Icons.hotel, 'color': AppColors.primaryLight, 'iconColor': AppColors.primaryDark},
@@ -25,48 +25,31 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: AppColors.bg(context),
-      appBar: AppBar(
-        title: const AppLogoText(height: 28),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: isDark ? AppColors.primary : AppColors.primaryDark),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.help_outline, color: AppColors.textPri(context)),
-            onPressed: () {},
-          ),
-        ],
-      ),
       body: SafeArea(
         child: Column(
           children: [
+            const OnboardingHeader(),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('ONBOARDING',
+                        const Text('Step 2 of 3',
                             style: TextStyle(
-                              fontSize: 12,
-                              letterSpacing: 1.2,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primaryDark,
-                            )),
-                        Text('Step 2 of 3',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primaryDark)),
+                        Text('Dietary Preferences',
                             style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPri(context),
-                            )),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPri(context))),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -83,10 +66,9 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                     const SizedBox(height: 24),
                     Text('Dietary Preferences',
                         style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPri(context),
-                        )),
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPri(context))),
                     const SizedBox(height: 8),
                     Text(
                       'Select all that apply. This helps us suggest the best recipes and pantry tips for you.',
@@ -147,14 +129,12 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                                             size: 28),
                                       ),
                                       const SizedBox(height: 10),
-                                      Text(
-                                        label,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                          color: AppColors.textPri(context),
-                                        ),
-                                      ),
+                                      Text(label,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                              color:
+                                                  AppColors.textPri(context))),
                                     ],
                                   ),
                                 ),
@@ -162,10 +142,8 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                                   const Positioned(
                                     top: 8,
                                     right: 8,
-                                    child: Icon(
-                                      Icons.check_circle,
-                                      color: AppColors.primaryDark,
-                                    ),
+                                    child: Icon(Icons.check_circle,
+                                        color: AppColors.primaryDark),
                                   ),
                               ],
                             ),
@@ -189,22 +167,19 @@ class _SignupStep2ScreenState extends State<SignupStep2Screen> {
                             child: Text(
                               'You can always update these preferences later in your Profile settings.',
                               style: TextStyle(
-                                fontSize: 13,
-                                color: AppColors.textPri(context),
-                              ),
+                                  fontSize: 13,
+                                  color: AppColors.textPri(context)),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
-            Divider(height: 1, color: AppColors.divider(context)),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
               child: Row(
                 children: [
                   Expanded(

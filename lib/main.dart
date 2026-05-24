@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_controller.dart';
+import 'store/app_store.dart';
 import 'screens/misc/splash_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -12,6 +13,7 @@ void main() {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
+  await AppStore.init();
   runApp(const ShelfLifeApp());
 }
 

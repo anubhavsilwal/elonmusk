@@ -7,6 +7,7 @@ class PantryItemCard extends StatelessWidget {
   final bool compact;
   final bool showMenu;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const PantryItemCard({
     super.key,
@@ -14,16 +15,14 @@ class PantryItemCard extends StatelessWidget {
     this.compact = false,
     this.showMenu = false,
     this.onTap,
+    this.onLongPress,
   });
 
   Color get _statusColor {
     switch (item.status) {
-      case ExpiryStatus.expired:
-        return AppColors.danger;
-      case ExpiryStatus.soon:
-        return AppColors.warning;
-      case ExpiryStatus.safe:
-        return AppColors.safe;
+      case ExpiryStatus.expired: return AppColors.danger;
+      case ExpiryStatus.soon:    return AppColors.warning;
+      case ExpiryStatus.safe:    return AppColors.safe;
     }
   }
 
@@ -31,14 +30,13 @@ class PantryItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(14),
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.card(context),
           borderRadius: BorderRadius.circular(14),
-          border: Border(
-            left: BorderSide(color: _statusColor, width: 5),
-          ),
+          border: Border(left: BorderSide(color: _statusColor, width: 5)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.03),
@@ -79,7 +77,10 @@ class PantryItemCard extends StatelessWidget {
                           color: AppColors.textMut(context), fontSize: 12)),
                 ),
               )
-            : const Center(child: Text('img')),
+            : Center(
+                child: Icon(Icons.image_not_supported_outlined,
+                    color: AppColors.textMut(context), size: 24),
+              ),
       ),
     );
   }
@@ -104,7 +105,7 @@ class PantryItemCard extends StatelessWidget {
             ),
             if (compact)
               Text(
-                '${item.daysUntilExpiry} ${item.daysUntilExpiry == 1 ? "Day" : "Days"}',
+                _daysLabel(),
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -133,12 +134,14 @@ class PantryItemCard extends StatelessWidget {
                 size: 14,
               ),
               const SizedBox(width: 4),
-              Text(
-                item.expiryLabel,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: _statusColor,
+              Expanded(
+                child: Text(
+                  item.expiryLabel,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: _statusColor,
+                  ),
                 ),
               ),
             ],
@@ -160,5 +163,13 @@ class PantryItemCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _daysLabel() {
+    final d = item.daysUntilExpiry;
+    if (d < 0) return 'Expired';
+    if (d == 0) return 'Today';
+    if (d == 1) return '1 Day';
+    return '$d Days';
   }
 }
