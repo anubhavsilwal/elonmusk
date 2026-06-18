@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'theme/app_theme.dart';
-import 'theme/theme_controller.dart';
-import 'store/app_store.dart';
-import 'screens/misc/splash_screen.dart';
+import 'view/theme/app_theme.dart';
+import 'view/theme/theme_controller.dart';
+import 'repo/services.dart';
+import 'view/screens/misc/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +13,10 @@ Future<void> main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  await AppStore.init();
+  await Services.init();
+  // Restore saved dark-mode preference
+  themeController.value =
+      Services.settings.darkMode ? ThemeMode.dark : ThemeMode.light;
   runApp(const ShelfLifeApp());
 }
 
